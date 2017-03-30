@@ -10,7 +10,9 @@
 #include "proto/RpcHeader.pb-c.h"
 #include "proto/datatransfer.pb-c.h"
 
+#include <sys/types.h>
 #include <sys/socket.h>
+#include <netdb.h>
 #include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
@@ -251,10 +253,24 @@ int hadoop_rpc_do_connect(struct connection_state * connection, const char * hos
     .l_onoff = true,
     .l_linger = 30
   };
+  struct addrinfo hints, * servinfo;
+  struct sockaddr_in * h;
+  char ip[100];
+
+  memset(&hints, 0, sizeof(struct addrinfo));
+  res = getaddrinfo(host, "http", &hints, &servinfo);
+  if (res < 0)
+  {
+    return res;
+  }
+
+  h = (struct sockaddr_in *) servinfo->ai_addr;
+  strcpy(ip, inet_ntoa(h->sin_addr));
+  freeaddrinfo(servinfo);
 
   connection->sockfd = socket(AF_INET, SOCK_STREAM, 0);
   connection->servaddr.sin_family = AF_INET;
-  connection->servaddr.sin_addr.s_addr = inet_addr(host);
+  connection->servaddr.sin_addr.s_addr = inet_addr(ip);
   connection->servaddr.sin_port = htons(port);
 
   res = connect(connection->sockfd, (struct sockaddr *) &connection->servaddr, sizeof(connection->servaddr));
@@ -395,7 +411,7 @@ static
 int hadoop_rpc_receive_proto(
   struct connection_state * state,
   ProtobufCMessage ** out,
-  ProtobufCMessage * (* unpack)(ProtobufCAllocator  *, size_t, const uint8_t *))
+  ProtobufCMessage * (*unpack)(ProtobufCAllocator  *, size_t, const uint8_t *))
 {
   int res;
   uint8_t len_varint[5];
