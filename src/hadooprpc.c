@@ -239,7 +239,7 @@ static
 int hadoop_rpc_disconnect_namenode(struct namenode_state * state)
 {
   hadoop_rpc_disconnect((struct connection_state *) state);
-  pthread_cancel(state->worker); // don't care if we fail
+  if (state && state->worker) pthread_cancel(state->worker); // don't care if we fail
   return 0;
 }
 
