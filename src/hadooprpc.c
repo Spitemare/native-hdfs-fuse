@@ -19,6 +19,7 @@
 
 #ifndef NDEBUG
 #include <syslog.h>
+#include <inttypes.h>
 #endif
 
 // DECLARATIONS ----------------------------------------------
@@ -858,4 +859,3 @@ int hadoop_rpc_send_packets(
 
   return res < 0 ? res : 0;
 }
-

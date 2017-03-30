@@ -1,5 +1,4 @@
 
-
 /*
    FUSE: Filesystem in Userspace
    Copyright (C) 2001-2007  Miklos Szeredi <miklos@szeredi.hu>
@@ -28,6 +27,7 @@
 #include <assert.h>
 #include <syslog.h>
 #include <signal.h>
+#include <inttypes.h>
 #endif
 
 #include "proto/ClientNamenodeProtocol.pb-c.h"
@@ -1776,4 +1776,3 @@ int main(int argc, char * argv[])
 
   return res;
 }
-
