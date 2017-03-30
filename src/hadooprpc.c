@@ -307,7 +307,7 @@ hadoop_rpc_connect_namenode(struct namenode_state * state, const char * host, co
     goto fail;
   }
 
-  userinfo.effectiveuser = getenv("USER");
+  userinfo.realuser = getenv("HADOOP_USER_NAME");
   context.userinfo = &userinfo;
   context.protocol = "org.apache.hadoop.hdfs.protocol.ClientProtocol";
   PACK(contextlen, contextbuf, &context);
